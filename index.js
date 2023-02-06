@@ -6,9 +6,9 @@ const morgan = require('morgan');
 const { PORT = 3000 } = process.env;
 const { auth } = require('express-openid-connect');
 const { User, Cupcake } = require('./db');
-
 // TODO - require express-openid-connect and destructure auth from it
 const { SECRET, BASE_URL, CLIENT_ID, ISSUER_BASE_URL } = process.env;
+// console.log(SECRET) - is registering variables
 const config = {
   authRequired: false,
   auth0Logout: true,
@@ -17,9 +17,6 @@ const config = {
   clientID: CLIENT_ID,
   issuerBaseURL: ISSUER_BASE_URL,
 };
-
-
-
 // middleware
 app.use(cors());
 app.use(morgan('dev'));
@@ -56,6 +53,16 @@ app.use(auth(config));
     }
   })
 
+  app.get('/profile', (req, res, next)=> {
+    try {
+      console.log(req.oidc.user)
+      res.send(req.oidc.user)
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  })
+  //how to add users
 
 app.get('/cupcakes', async (req, res, next) => {
   try {
